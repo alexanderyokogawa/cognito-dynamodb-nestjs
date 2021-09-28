@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+
+  dynamo:
+    image: amazon/dynamodb-local:latest
+    container_name: dynamo-checklist
+    entrypoint: java
+    command: '-jar DynamoDBLocal.jar -sharedDb -dbPath /data'
+    restart: 'no'
+    volumes:
+      - ./.docker/dynamodb:/data:rw
+    ports:
+      - '8000:8000'
+    network_mode: 'bridge'
