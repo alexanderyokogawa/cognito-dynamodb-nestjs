@@ -1,0 +1,23 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type LabelGroup {
+  es_mx: String
+  pt_br: String
+  en_us: String
+}
+
+type Diagnosis {
+  id: String!
+  group: String
+  kind: String
+  label: LabelGroup
+  createdAt: String
+  updatedAt: String
+}
+
+type Query {
+  diagnosis: [Diagnosis!]!
+  diagnostic(id: String!): Diagnosis!
+}

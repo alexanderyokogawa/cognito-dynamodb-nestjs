@@ -8,13 +8,9 @@ import {
 } from '@aws-sdk/lib-dynamodb';
 import { v4 as uuid } from 'uuid';
 import { dynamoDB } from '../connectors/dynamodb.connector';
-import {
-  BatchGetItemCommand,
-  BatchGetItemCommandInput,
-  GetItemCommand,
-  GetItemCommandInput,
-} from '@aws-sdk/client-dynamodb';
+import { GetItemCommand, GetItemCommandInput } from '@aws-sdk/client-dynamodb';
 import { Logger } from '@nestjs/common';
+import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
 export class DynamoDBImplements {
   private readonly logger = new Logger(DynamoDBImplements.name);
@@ -54,32 +50,12 @@ export class DynamoDBImplements {
   async findById(id: string): Promise<any> {
     const getParams: GetItemCommandInput = {
       TableName: this.tableName,
-      Key: {
-        id: { S: id },
-      },
+      Key: marshall({ id: id }),
     };
 
-    return dynamoDB.send(new GetItemCommand(getParams));
-  }
+    const result = await dynamoDB.send(new GetItemCommand(getParams));
 
-  async findInId(groupId: Record<string, any>): Promise<any> {
-    const { items } = groupId;
-    const keys = [];
-    for (const item of items) {
-      keys.push({ id: { S: item } });
-    }
-
-    const getParams: BatchGetItemCommandInput = {
-      RequestItems: {
-        Diagnosis: {
-          Keys: keys,
-        },
-      },
-    };
-
-    console.log('getParams->', getParams);
-
-    return dynamoDB.send(new BatchGetItemCommand(getParams));
+    return unmarshall(result.Item || {});
   }
 
   async update(id: string, param: any): Promise<any> {
