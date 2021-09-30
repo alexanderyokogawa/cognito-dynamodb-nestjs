@@ -20,4 +20,5 @@ type Diagnosis {
 type Query {
   diagnosis: [Diagnosis!]!
   diagnostic(id: String!): Diagnosis!
+  diagnosisIn(groupId: [String!]!): [Diagnosis!]!
 }

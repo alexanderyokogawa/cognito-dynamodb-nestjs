@@ -9,7 +9,7 @@ import { GraphQLModule } from '@nestjs/graphql';
       isGlobal: true,
     }),
     GraphQLModule.forRoot({
-      autoSchemaFile: 'schema.gql',
+      autoSchemaFile: 'src/graphql/schema.gql',
       debug: true,
       playground: true,
     }),

@@ -5,6 +5,7 @@ import {
   BatchGetItemCommandInput,
 } from '@aws-sdk/client-dynamodb';
 import { dynamoDB } from '../../common/connectors/dynamodb.connector';
+import { unmarshall } from '@aws-sdk/util-dynamodb';
 
 @Injectable()
 export class DiagnosisRepository extends DynamoDBImplements {
@@ -27,8 +28,17 @@ export class DiagnosisRepository extends DynamoDBImplements {
       },
     };
 
-    console.log('getParams->', getParams);
+    const result = await dynamoDB.send(new BatchGetItemCommand(getParams));
 
-    return dynamoDB.send(new BatchGetItemCommand(getParams));
+    const { Responses } = result;
+
+    const { Diagnosis } = Responses;
+
+    const parseResponse = [];
+
+    for (const item of Diagnosis) {
+      parseResponse.push(unmarshall(item));
+    }
+    return { Items: parseResponse };
   }
 }
