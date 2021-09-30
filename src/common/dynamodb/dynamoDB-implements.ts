@@ -70,10 +70,12 @@ export class DynamoDBImplements {
       },
     };
 
-    return dynamoDB.send(new PutCommand(pathParams));
+    await dynamoDB.send(new PutCommand(pathParams));
+
+    return this.findById(pathParams.Item.id);
   }
 
-  async remove(id: string): Promise<any> {
+  async remove(id: string): Promise<void> {
     const deleteParams: DeleteCommandInput = {
       TableName: this.tableName,
       Key: {
@@ -81,6 +83,6 @@ export class DynamoDBImplements {
       },
     };
 
-    return dynamoDB.send(new DeleteCommand(deleteParams));
+    await dynamoDB.send(new DeleteCommand(deleteParams));
   }
 }

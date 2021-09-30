@@ -37,5 +37,5 @@ export class DiagnosisResolver {
     createDiagnosisInput: CreateDiagnosisInput,
   ) {
     return this.diagnosisService.create(createDiagnosisInput);
-}
+  }
 }
