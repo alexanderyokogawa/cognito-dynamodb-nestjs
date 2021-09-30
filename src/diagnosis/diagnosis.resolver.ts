@@ -20,7 +20,7 @@ export class DiagnosisResolver {
   }
 
   @Query((returns) => [Diagnosis])
-  async diagnosisIn(
+  async diagnosisIdIn(
     @Args('groupId', { type: () => [String] }) groupId: GetInDiagnosisDto,
   ) {
     const diagnosisReturn = await this.diagnosisService.findInId({
