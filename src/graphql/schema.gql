@@ -22,3 +22,21 @@ type Query {
   diagnostic(id: String!): Diagnosis!
   diagnosisIdIn(groupId: [String!]!): [Diagnosis!]!
 }
+
+type Mutation {
+  createDiagnostic(createDiagnosisInput: CreateDiagnosisInput!): Diagnosis!
+}
+
+input CreateDiagnosisInput {
+  group: String
+  kind: String
+  label: LabelGroupInput
+  createdAt: String
+  updatedAt: String
+}
+
+input LabelGroupInput {
+  es_mx: String
+  pt_br: String
+  en_us: String
+}

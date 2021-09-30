@@ -10,7 +10,7 @@ import { v4 as uuid } from 'uuid';
 import { dynamoDB } from '../connectors/dynamodb.connector';
 import { GetItemCommand, GetItemCommandInput } from '@aws-sdk/client-dynamodb';
 import { Logger } from '@nestjs/common';
-import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 
 export class DynamoDBImplements {
   private readonly logger = new Logger(DynamoDBImplements.name);
@@ -36,7 +36,9 @@ export class DynamoDBImplements {
 
     const command = new PutCommand(putParams);
 
-    return dynamoDB.send(command);
+    await dynamoDB.send(command);
+
+    return this.findById(putParams.Item.id);
   }
 
   async findAll(): Promise<any> {

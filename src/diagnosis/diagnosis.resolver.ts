@@ -1,7 +1,8 @@
-import { Args, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Diagnosis } from './entities/diagnosis.entity';
 import { DiagnosisService } from './diagnosis.service';
 import { GetInDiagnosisDto } from './dto/get-in-diagnosis.dto';
+import { CreateDiagnosisInput } from './dto/create-diagnosis-input.dto';
 
 @Resolver((of) => Diagnosis)
 export class DiagnosisResolver {
@@ -29,4 +30,12 @@ export class DiagnosisResolver {
 
     return diagnosisReturn?.Items;
   }
+
+  @Mutation((returns) => Diagnosis)
+  async createDiagnostic(
+    @Args('createDiagnosisInput')
+    createDiagnosisInput: CreateDiagnosisInput,
+  ) {
+    return this.diagnosisService.create(createDiagnosisInput);
+}
 }
