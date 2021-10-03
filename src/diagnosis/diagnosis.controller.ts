@@ -6,16 +6,19 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { DiagnosisService } from './diagnosis.service';
 import { CreateDiagnosisDto } from './dto/create-diagnosis.dto';
 import { UpdateDiagnosisDto } from './dto/update-diagnosis.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('diagnosis')
 export class DiagnosisController {
   constructor(private readonly diagnosisService: DiagnosisService) {}
 
   @Post()
+  @UseGuards(AuthGuard('jwt'))
   create(@Body() createDiagnosisDto: CreateDiagnosisDto) {
     return this.diagnosisService.create(createDiagnosisDto);
   }
