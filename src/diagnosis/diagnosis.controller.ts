@@ -14,11 +14,11 @@ import { UpdateDiagnosisDto } from './dto/update-diagnosis.dto';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('diagnosis')
+@UseGuards(AuthGuard('jwt'))
 export class DiagnosisController {
   constructor(private readonly diagnosisService: DiagnosisService) {}
 
   @Post()
-  @UseGuards(AuthGuard('jwt'))
   create(@Body() createDiagnosisDto: CreateDiagnosisDto) {
     return this.diagnosisService.create(createDiagnosisDto);
   }

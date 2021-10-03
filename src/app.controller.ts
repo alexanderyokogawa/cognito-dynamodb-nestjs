@@ -1,12 +1,12 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Controller, Get } from '@nestjs/common';
 
 @Controller()
 export class AppController {
   @Get()
-  @UseGuards(AuthGuard('jwt'))
-  getHello(): string {
-    console.log('JWT->', AuthGuard('jwt'));
-    return 'hello word';
+  getHello(): { message: string; version: string } {
+    return {
+      message: 'checklist api',
+      version: '0.0.1',
+    };
   }
 }
