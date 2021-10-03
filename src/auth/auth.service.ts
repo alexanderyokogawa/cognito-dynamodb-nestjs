@@ -21,29 +21,6 @@ export class AuthService {
     });
   }
 
-  registerUser(registerRequest: {
-    name: string;
-    email: string;
-    password: string;
-  }) {
-    const { name, email, password } = registerRequest;
-    return new Promise((resolve, reject) => {
-      return this.userPool.signUp(
-        name,
-        password,
-        [new CognitoUserAttribute({ Name: 'email', Value: email })],
-        null,
-        (err, result) => {
-          if (!result) {
-            reject(err);
-          } else {
-            resolve(result.user);
-          }
-        },
-      );
-    });
-  }
-
   authenticateUser(user: { name: string; password: string }) {
     const { name, password } = user;
 
@@ -60,10 +37,10 @@ export class AuthService {
 
     return new Promise((resolve, reject) => {
       return newUser.authenticateUser(authenticationDetails, {
-        onSuccess: result => {
+        onSuccess: (result) => {
           resolve(result);
         },
-        onFailure: err => {
+        onFailure: (err) => {
           reject(err);
         },
       });
