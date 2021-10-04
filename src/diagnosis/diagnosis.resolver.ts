@@ -3,8 +3,11 @@ import { Diagnosis } from './entities/diagnosis.entity';
 import { DiagnosisService } from './diagnosis.service';
 import { GetInDiagnosisDto } from './dto/get-in-diagnosis.dto';
 import { CreateDiagnosisInput } from './dto/create-diagnosis-input.dto';
+import { GqlAuthGuard } from '../auth/guards/gql-auth.guard';
+import { UseGuards } from '@nestjs/common';
 
 @Resolver((of) => Diagnosis)
+@UseGuards(GqlAuthGuard)
 export class DiagnosisResolver {
   constructor(private diagnosisService: DiagnosisService) {}
 
