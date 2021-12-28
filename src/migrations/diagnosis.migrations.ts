@@ -2,7 +2,7 @@ import {
   CreateTableCommand,
   CreateTableCommandInput,
 } from '@aws-sdk/client-dynamodb';
-import { dynamoDB } from '../../common/connectors/dynamodb.connector';
+import { dynamoDB } from '../common/connectors/dynamodb.connector';
 
 const diagnosisTableParams: CreateTableCommandInput = {
   TableName: 'Diagnosis',
