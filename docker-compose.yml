@@ -13,3 +13,12 @@ services:
     ports:
       - '8000:8000'
     network_mode: 'bridge'
+
+  sqs:
+    image: roribio16/alpine-sqs:latest
+    container_name: sqs
+    restart: 'no'
+    ports:
+      - '9324:9324'
+      - '9325:9325'
+    network_mode: 'bridge'

@@ -1,0 +1,134 @@
+service:
+  name: tripws-place-service
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline-sqs
+  - serverless-offline-dynamodb-streams
+  - serverless-offline-sns
+  - serverless-plugin-typescript
+  - serverless-plugin-optimize
+  #  - serverless-domain-manager
+  - serverless-offline
+
+custom:
+  stage: ${opt:stage, 'local'}
+
+  # Load config
+  config: ${file(./config.yml):${self:custom.stage}, file(./config.yml):default}
+  apiGateway: ${file(./config.yml):apiGateway.${self:custom.stage}}
+
+  region: ${self:custom.config.deploy.region}
+  accountId: ${self:custom.config.deploy.accountId}
+
+  # Load vars from SSM
+  ssm: ${self:custom.config.ssm}
+
+  serverless-offline:
+    host: 0.0.0.0
+    port: ${env:API_PORT, 4000}
+    babelOptions:
+      presets: [ "@babel/preset-env" ]
+
+  serverless-offline-sqs:
+    autoCreate: true
+    skipCacheInvalidation: false
+    apiVersion: "2012-11-05"
+    endpoint: http://${env:SQS_HOST, "localhost"}:${env:SQS_PORT, 9324}
+    region: us-east-1
+
+  serverless-offline-sns:
+    port: ${env:SNS_PORT}
+    debug: false
+    region: ${self:custom.region}
+    accountId: ${self:custom.accountId}
+
+  dynamodb:
+    stages:
+      - local
+    start:
+      host: ${env:DYNAMODB_HOST, "localhost"}
+      port: ${env:DYNAMODB_PORT, 8000}
+      migrate: true
+      seed: true
+      convertEmptyValues: true
+      noStart: true
+#    seed:
+#      local:
+#        sources:
+#          - table: bgc-drivers-${self:custom.stage}
+#            sources: [ tools/seed/bgc-drivers.json ]
+#          - table: bgc-rules-steps-${self:custom.stage}
+#            sources: [ tools/seed/bgc-rules-steps.json ]
+#          - table: bgc-keywords-${self:custom.stage}
+#            sources: [ tools/seed/bgc-keywords.json ]
+#          - table: scheduler-time-table-${self:custom.stage}
+#            sources: [ tools/seed/schedule-time-table.json ]
+#          - table: provider-templates-${self:custom.stage}
+#            sources: [ tools/seed/whatsapp-templates-dynamo.json ]
+
+  serverless-offline-dynamodb-streams:
+    apiVersion: "2013-12-02"
+    endpoint: http://${env:DYNAMODB_HOST, "localhost"}:${env:DYNAMODB_PORT, 8000}
+    region: ${self:custom.region}
+    readInterval: 500
+
+  tags:
+    Service: ${self:service}
+    Product: tripws
+    Team: platform
+
+  basePath: "locals/"
+
+#  customDomain:
+#    domainName: ${self:custom.apiGateway.domainName}
+#    stage: ${self:custom.stage}
+#    basePath: places
+#    certificateName: ${self:custom.apiGateway.certificateName}
+#    createRoute53Record: true
+#    endpointType: 'regional'
+#    securityPolicy: tls_1_2
+#    apiType: rest
+#    autoDomain: false
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${self:custom.stage}
+  region: ${self:custom.region}
+  endpointType: regional
+
+  apiName: ${self:service}
+  stackName: ${self:service}-${self:custom.stage}
+  deploymentBucket:
+    name: ${self:custom.config.deploy.deploymentBucket}
+    maxPreviousDeploymentArtifacts: ${self:custom.config.deploy.pruneVersion}
+    blockPublicAccess: true
+  deploymentPrefix: ${self:custom.config.deploy.deploymentPrefix}
+
+  memorySize: 256
+  timeout: 30
+  versionFunctions: true
+  logRetentionInDays: 1
+
+  iamRoleStatements: ${file(./iam-roles.yml):default}
+  environment: ${file(./environments.yml):${self:custom.stage}, file(./environments.yml):default}
+
+functions: ${file(./functions.yml)}
+
+resources:
+  - ${file(./resources/schedule-driver.sqs.yml)}
+  - ${file(./resources/schedule-driver-cancel.sqs.yml)}
+  - ${file(./resources/schedule-driver-no-show.sqs.yml)}
+  - ${file(./resources/schedule-driver-link-unlink-car.sqs.yml)}
+
+package:
+  individually: true
+  excludeDevDependencies: true
+  exclude:
+    - README.md
+    - .serverless/**
+    - .webpack/**
+    - test/**
+
+frameworkVersion: ">=2"

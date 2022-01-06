@@ -1,0 +1,111 @@
+# Custom domains (API Gateway)
+apiGateway:
+  local:
+    domainName: local.tripws.dev.br
+    certificateName: tripws.dev.br
+    endpointType: REGIONAL
+  dev:
+    domainName: api.tripws.dev.br
+    certificateName: tripws.dev.br
+    endpointType: REGIONAL
+  qa:
+    domainName: api-qa.tripws.dev.br
+    certificateName: kovi.dev
+    endpointType: REGIONAL
+  staging:
+    domainName: api-staging.tripws.dev.br
+    certificateName: tripws.dev.br
+    endpointType: REGIONAL
+  prod:
+    domainName: api.tripws.com.br
+    certificateName: tripws.com.br
+    endpointType: REGIONAL
+
+## DEFAULT_ENVS
+default:
+  # Deploy vars
+  deploy:
+    deploymentBucket: 'deploy.tripws.dev.br'
+    deploymentPrefix: tripws/${self:custom.stage}
+    docsBucket: 'docs.tripws.dev.br'
+    region: 'us-east-1'
+    pruneVersion: 1
+    accountId: 947260245808
+    jwtSecret: 'U2Nw+JE5!pKk53$REIrM*yE0'
+    deletionPolicy: 'Delete'
+
+  # Disable/Enable lambdas to run in background
+  jobsEnabled: false
+
+  # Base SQS Queue URL
+  sqsQueue: 'https://sqs.${self:custom.region}.amazonaws.com/${self:custom.config.deploy.accountId}/'
+
+  #MongoDB Database
+  mongodb:
+    host: 'mongodb+srv://tripwsapidev:g04BOztdvOtT4R4r@tripws-api.koyvo.mongodb.net/tripws-api-dev'
+    port: '27017'
+
+## LOCAL_ENVS
+local:
+  # Deploy vars
+  deploy:
+    deploymentBucket: 'deploy.kovi.dev'
+    deploymentPrefix: rental/${self:custom.stage}
+    docsBucket: 'docs.kovi.dev'
+    region: 'us-east-1'
+    pruneVersion: 1
+    accountId: 947260245808
+    jwtSecret: 'U2Nw+JE5!pKk53$REIrM*yE0'
+    deletionPolicy: 'Delete'
+
+  # Disable/Enable lambdas to run in background
+  jobsEnabled: true
+
+  # Base SQS Queue URL
+  sqsQueue: http://${env:SQS_HOST, "127.0.0.1"}:${env:SQS_PORT, 9324}/queue/
+
+  #MongoDB Database
+  mongodb:
+    host: 'mongodb+srv://tripwsapidev:AzKQZcwKfkfhdnlo@tripws-api.koyvo.mongodb.net/tripws-api-dev'
+    port: '27017'
+
+  ssm:
+    # Redis Credentials
+    redis:
+      host: ${env:REDIS_HOST, "127.0.0.1"}
+      port: ${env:REDIS_PORT, "6379"}
+      auth: 'false'
+
+    # Dynamo Credentials
+    dynamo:
+      host: ${env:DYNAMODB_HOST, "127.0.0.1"}
+      port: ${env:DYNAMODB_PORT, "8000"}
+
+    # SQS Credentials
+    sqs:
+      host: ${env:SQS_HOST, "127.0.0.1"}
+      port: ${env:SQS_PORT, "9324"}
+
+## PROD_ENVS
+prod:
+  # Deploy vars
+  deploy:
+    deploymentBucket: 'deploy.tripws.com.br'
+    deploymentPrefix: 'tripws'
+    docsBucket: 'docs.tripws.com.br'
+    region: 'us-east-1'
+    pruneVersion: 3
+    accountId: '230230295059'
+    jwtSecret: 'U2Nw+JE5!pKk53$REIrM*yE0'
+    deletionPolicy: 'Retain'
+
+  # Disable/Enable lambdas to run in background
+  jobsEnabled: true
+
+  # Base SQS Queue URL
+  sqsQueue: 'https://sqs.${self:custom.region}.amazonaws.com/${self:custom.config.deploy.accountId}/'
+
+  #MongoDB Database
+  mongodb:
+    host: 'mongodb+srv://tripwsapidev:AzKQZcwKfkfhdnlo@tripws-api.koyvo.mongodb.net/tripws-api-dev'
+    port: '27017'

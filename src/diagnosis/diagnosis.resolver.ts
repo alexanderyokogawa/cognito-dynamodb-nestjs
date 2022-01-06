@@ -6,24 +6,24 @@ import { CreateDiagnosisInput } from './dto/create-diagnosis-input.dto';
 import { GqlAuthGuard } from '../auth/guards/gql-auth.guard';
 import { UseGuards } from '@nestjs/common';
 
-@Resolver((of) => Diagnosis)
+@Resolver(() => Diagnosis)
 @UseGuards(GqlAuthGuard)
 export class DiagnosisResolver {
   constructor(private diagnosisService: DiagnosisService) {}
 
-  @Query((returns) => [Diagnosis])
+  @Query(() => [Diagnosis])
   async diagnosis(): Promise<Diagnosis[]> {
     const diagnosisReturn = await this.diagnosisService.findAll();
 
     return diagnosisReturn?.Items;
   }
 
-  @Query((returns) => Diagnosis)
+  @Query(() => Diagnosis)
   async diagnostic(@Args('id') id: string): Promise<Diagnosis> {
     return await this.diagnosisService.findById(id);
   }
 
-  @Query((returns) => [Diagnosis])
+  @Query(() => [Diagnosis])
   async diagnosisIdIn(
     @Args('groupId', { type: () => [String] }) groupId: GetInDiagnosisDto,
   ) {
@@ -34,7 +34,7 @@ export class DiagnosisResolver {
     return diagnosisReturn?.Items;
   }
 
-  @Mutation((returns) => Diagnosis)
+  @Mutation(() => Diagnosis)
   async createDiagnostic(
     @Args('createDiagnosisInput')
     createDiagnosisInput: CreateDiagnosisInput,

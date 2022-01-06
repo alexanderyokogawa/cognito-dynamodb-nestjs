@@ -1,0 +1,23 @@
+place-service:
+  name: places-${self:custom.stage}
+  description: Places API
+  handler: src/lambda.handler
+  memorySize: 256
+  timeout: 15
+  events:
+    - http:
+        path: ${self:custom.basePath, 'locals/'}{proxy+}
+        method: post
+        cors: true
+    - http:
+        path: ${self:custom.basePath, 'locals/'}{proxy+}
+        method: get
+        cors: true
+    - http:
+        path: ${self:custom.basePath, 'locals/'}{proxy+}
+        method: patch
+        cors: true
+    - http:
+        path: ${self:custom.basePath, 'locals/'}{proxy+}
+        method: delete
+        cors: true

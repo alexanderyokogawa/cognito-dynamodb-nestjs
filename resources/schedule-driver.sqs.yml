@@ -1,0 +1,5 @@
+Resources:
+  ScheduleWorkerDriverQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: schedule-worker-${self:custom.stage}-driver
