@@ -2,13 +2,29 @@ import { Injectable } from '@nestjs/common';
 import { CreateDiagnosisDto } from './dto/create-diagnosis.dto';
 import { UpdateDiagnosisDto } from './dto/update-diagnosis.dto';
 import { DiagnosisRepository } from './repository/diagnosis.repository';
+import SQS from '../common/connectors/sqs';
+
+const { env } = process;
 
 @Injectable()
 export class DiagnosisService {
-  constructor(private readonly diagnosisRepository: DiagnosisRepository) {}
+  constructor(
+    private readonly diagnosisRepository: DiagnosisRepository,
+    private queueUrl: string,
+  ) {
+    this.queueUrl = `${env.QUEUE_URL}${env.QUEUE_TW_SQS}`;
+  }
 
   async create(createDiagnosisDto: CreateDiagnosisDto) {
-    return this.diagnosisRepository.create(createDiagnosisDto);
+    try {
+      const diagnosis = await this.diagnosisRepository.create(
+        createDiagnosisDto,
+      );
+      await SQS.sendToQueue(diagnosis, this.queueUrl);
+      return diagnosis;
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
   async findAll() {

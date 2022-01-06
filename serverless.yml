@@ -117,10 +117,7 @@ provider:
 functions: ${file(./functions.yml)}
 
 resources:
-  - ${file(./resources/schedule-driver.sqs.yml)}
-  - ${file(./resources/schedule-driver-cancel.sqs.yml)}
-  - ${file(./resources/schedule-driver-no-show.sqs.yml)}
-  - ${file(./resources/schedule-driver-link-unlink-car.sqs.yml)}
+  - ${file(./resources/queue-tw.sqs.yml)}
 
 package:
   individually: true

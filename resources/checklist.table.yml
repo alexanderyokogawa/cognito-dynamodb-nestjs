@@ -1,0 +1,14 @@
+Resources:
+  ChecklistTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: checklist
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      TableName: checklist-${self:custom.stage}
